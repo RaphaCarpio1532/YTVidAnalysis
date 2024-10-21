@@ -2,6 +2,27 @@ import re
 import googleapiclient.discovery
 import cx_Oracle
 import matplotlib.pyplot as plt
+import os
+from dotenv import load_dotenv
+
+
+# Load environment variables from the .env file
+load_dotenv()
+# Function to create a connection to Oracle Database
+def create_db_connection():
+    try:
+        user = os.getenv("DB_USER")
+        password = os.getenv("DB_PASSWORD")
+        dsn = os.getenv("DB_DSN")
+
+        connection = cx_Oracle.connect(user=user, password=password, dsn=dsn)
+        return connection
+    except cx_Oracle.Error as error:
+        print("Error connecting to the database: ", error)
+        return None
+
+# Use the YouTube API key from .env
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 
 # Hardcoded YouTube API Key (replace with your own)
 API_KEY = "AIzaSyDZkBabo0yNHGWuLxJJf9HqDAgqfWIYgVA"
@@ -27,16 +48,6 @@ def get_video_data(video_id, api_key):
         return response["items"][0]
     else:
         print("No data found for the video.")
-        return None
-
-# Function to create a connection to Oracle Database
-def create_db_connection():
-    try:
-        dsn = cx_Oracle.makedsn("localhost", 1521, service_name="xe")
-        connection = cx_Oracle.connect(user="your_username", password="your_password", dsn=dsn)
-        return connection
-    except cx_Oracle.Error as error:
-        print("Error connecting to the database: ", error)
         return None
 
 # Function to insert video data into the database
